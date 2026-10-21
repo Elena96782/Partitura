@@ -122,7 +122,7 @@ const params=new URLSearchParams(location.search);
 const previewDay=params.has("day")?Math.max(1,Math.min(TOTAL,parseInt(params.get("day"),10)||1))-1:null;
 let picked=null;
 
-if(P.name){$("forName").append("для ");const s=document.createElement("span");s.className="name";s.textContent=P.name;$("forName").appendChild(s)}
+if(P.nameGen||P.name){$("forName").append("для ");const s=document.createElement("span");s.className="name";s.textContent=P.nameGen||P.name;$("forName").appendChild(s)}
 
 function setTempo(i){const t=TEMPI[(i*7)%TEMPI.length];$("tempo").textContent=t[0];const sm=document.createElement("small");sm.textContent=t[1];$("tempo").appendChild(sm);
   $("metro").textContent="♩ = "+(60+((i*37)%73));$("measure").textContent=String(i+1)}
