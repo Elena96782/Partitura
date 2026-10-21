@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Партитура года</title>
+<meta name="theme-color" content="#11151E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Партитура">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F4F5F7; --sheet:#FFFFFF; --ink:#1B2233; --muted:#5E6678; --line:#CDD2DB; --brass:#9A6F22; --brass-soft:#EFE4CC;
+  --f-display:"Prata","Georgia","Times New Roman",serif;
+  --f-tempo:"Cormorant Garamond","Georgia",serif;
+  --f-body:"Manrope","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#11151E; --sheet:#181D29; --ink:#E9EAEF; --muted:#9CA3B4; --line:#323A4C; --brass:#D6AE5E; --brass-soft:#3A3220; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:calc(28px + env(safe-area-inset-top,0px));padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(30px,7vw,44px);line-height:1.1;margin:6px 0 0;text-wrap:balance}
+h1 .name{color:var(--brass)}
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:28px clamp(18px,5vw,40px) 30px;display:flex;flex-direction:column;gap:22px}
+.score-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.tempo{font-family:var(--f-tempo);font-style:italic;font-weight:600;font-size:27px;line-height:1.1}
+.tempo small{display:block;font-family:var(--f-body);font-style:normal;font-weight:500;font-size:13px;color:var(--muted);margin-top:4px}
+.metro{font-family:var(--f-mono);font-size:14px;color:var(--muted);white-space:nowrap}
+.staff{position:relative;height:56px;opacity:.55;
+  background:repeating-linear-gradient(to bottom,var(--ink) 0 1px,transparent 1px 12px) 0 6px/100% 49px no-repeat}
+.staff::before,.staff::after{content:"";position:absolute;top:6px;height:49px;background:var(--ink)}
+.staff::before{left:0;width:1px}
+.staff::after{right:0;width:5px;background:linear-gradient(to right,var(--ink) 0 1px,transparent 1px 3px,var(--ink) 3px)}
+.measure{position:absolute;left:0;top:-14px;font-family:var(--f-mono);font-size:11px}
+.lyric{font-family:var(--f-display);font-size:clamp(21px,4.4vw,27px);line-height:1.45;margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.lyric.empty{color:var(--muted);font-size:19px}
+.sign{font-family:var(--f-tempo);font-style:italic;font-size:22px;color:var(--brass);margin:0}
+.sign:empty{display:none}
+.meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.pill{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:var(--brass-soft);color:var(--brass);padding:3px 8px;border-radius:2px}
+.linkbtn{font:inherit;font-size:13px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0}
+h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:0 0 4px}
+.hint{color:var(--muted);font-size:14px;margin:0 0 14px}
+.bars{display:flex;flex-wrap:wrap;gap:3px}
+.bar{width:12px;height:22px;border:1px solid var(--line);background:transparent;padding:0;border-radius:1px}
+.bar.past{background:var(--ink);border-color:var(--ink);opacity:.8;cursor:pointer}
+.bar.today{background:var(--brass);border-color:var(--brass);cursor:pointer}
+.bar.sel{outline:2px solid var(--brass);outline-offset:1px}
+.bar:focus-visible,.linkbtn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:9px;height:15px;vertical-align:-3px;margin-right:6px;border:1px solid var(--line)}
+.legend .lp{background:var(--ink);border-color:var(--ink)}.legend .lt{background:var(--brass);border-color:var(--brass)}
+.install{font-size:14px;color:var(--muted);border-left:3px solid var(--brass);padding:4px 0 4px 14px;margin:0}
+.install[hidden]{display:none}
+@media (max-width:520px){.bar{width:10px;height:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">365 тактов · одно пожелание каждое утро</div>
+    <h1>Партитура года <span id="forName"></span></h1>
+  </header>
+
+  <article class="sheet" id="card">
+    <div class="score-head">
+      <div class="tempo" id="tempo">Andante<small>неспешным шагом</small></div>
+      <div class="metro" id="metro">♩ = 76</div>
+    </div>
+    <div class="staff"><span class="measure" id="measure"></span></div>
+    <p class="lyric" id="lyric">Оркестр настраивается…</p>
+    <p class="sign" id="sign"></p>
+    <div class="meta"><span id="dateLine"></span><span id="badge"></span></div>
+  </article>
+
+  <section id="yearSec">
+    <h2>Год по тактам</h2>
+    <p class="hint">Сыгранные такты можно открыть и перечитать. Следующие откроются в свой день.</p>
+    <div class="bars" id="bars" aria-label="365 тактов года"></div>
+    <div class="legend"><span><i class="lp"></i>сыграно</span><span><i class="lt"></i>сегодня</span><span><i></i>впереди</span></div>
+  </section>
+
+  <p class="install" id="install" hidden></p>
+</div>
+
+<script src="wishes.js"></script>
+<script>
+(function(){
+const TOTAL=365, KEY="partitura-goda";
+const TEMPI=[["Allegro con brio","весело, с огнём"],["Andante","неспешным шагом"],["Cantabile","певуче"],["Vivace","живо"],["Dolce","нежно"],["Moderato","в своём темпе"],["Con spirito","с задором"],["Tranquillo","спокойно"],["Maestoso","величественно"],["Scherzando","шутливо"],["Adagio","медленно, со вкусом"],["Animato","воодушевлённо"],["Leggiero","легко"],["Risoluto","решительно"],["Grazioso","изящно"],["Giocoso","игриво"],["Espressivo","выразительно"],["Brillante","блестяще"],["Amabile","приветливо"],["Sostenuto","сдержанно, с опорой"],["Con fuoco","с огнём"],["Rubato","свободно, как чувствуешь"],["Presto","очень быстро"],["Largo","широко"]];
+const $=id=>document.getElementById(id);
+const P=window.PARTITURA||{name:"",start:"",data:""};
+
+function decode(s){
+  try{const bin=atob(s);const k=new TextEncoder().encode(KEY);const b=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++)b[i]=bin.charCodeAt(i)^k[i%k.length];
+    return JSON.parse(new TextDecoder().decode(b))}catch(e){return []}
+}
+const W=decode(P.data);
+
+function parseDate(s){if(!/^\d{4}-\d{2}-\d{2}$/.test(s||""))return null;const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
+const START=parseDate(P.start);
+function today0(){const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())}
+function dayIndex(){return START?Math.round((today0()-START)/864e5):null}
+function dateOf(i){return new Date(START.getFullYear(),START.getMonth(),START.getDate()+i)}
+function fmt(d,o){return d.toLocaleDateString("ru-RU",o||{day:"numeric",month:"long",weekday:"long"})}
+function plural(n,a,b,c){const m=n%10,h=n%100;if(m===1&&h!==11)return a;if(m>=2&&m<=4&&(h<12||h>14))return b;return c}
+
+const params=new URLSearchParams(location.search);
+const previewDay=params.has("day")?Math.max(1,Math.min(TOTAL,parseInt(params.get("day"),10)||1))-1:null;
+let picked=null;
+
+if(P.name){$("forName").append("для ");const s=document.createElement("span");s.className="name";s.textContent=P.name;$("forName").appendChild(s)}
+
+function setTempo(i){const t=TEMPI[(i*7)%TEMPI.length];$("tempo").textContent=t[0];const sm=document.createElement("small");sm.textContent=t[1];$("tempo").appendChild(sm);
+  $("metro").textContent="♩ = "+(60+((i*37)%73));$("measure").textContent=String(i+1)}
+
+function render(){
+  const idx=dayIndex();const lyric=$("lyric"),sign=$("sign"),dl=$("dateLine"),badge=$("badge");
+  sign.textContent="";dl.textContent="";badge.textContent="";lyric.className="lyric";
+  if(idx===null){lyric.textContent="Партитура ещё не настроена.";$("yearSec").hidden=true;return}
+  let i=previewDay!==null?previewDay:(picked!==null?picked:idx);
+  if(i<0){
+    setTempo(0);$("measure").textContent="";
+    lyric.textContent="Оркестр настраивается. Первый такт прозвучит "+fmt(START,{day:"numeric",month:"long"})+".";
+    dl.textContent="До начала "+(-i)+" "+plural(-i,"день","дня","дней");renderBars(idx,null);return;
+  }
+  if(i>=TOTAL){
+    $("tempo").textContent="Fine";const sm=document.createElement("small");sm.textContent="конец пьесы";$("tempo").appendChild(sm);
+    $("metro").textContent="";$("measure").textContent="365";
+    lyric.textContent="Год сыгран до последнего такта. Спасибо, что дирижировала им так красиво. Любой такт можно перечитать ниже.";
+    renderBars(idx,null);return;
+  }
+  setTempo(i);
+  const w=W[i];
+  if(w){lyric.textContent=w.t;sign.textContent=w.s?"— "+w.s:""}
+  else{lyric.className="lyric empty";lyric.textContent="Этот такт ещё дописывается."}
+  dl.textContent="Такт "+(i+1)+" из "+TOTAL+" · "+fmt(dateOf(i));
+  if(previewDay!==null){const p=document.createElement("span");p.className="pill";p.textContent="предпросмотр";badge.appendChild(p)}
+  else if(i!==idx){const b=document.createElement("button");b.className="linkbtn";b.textContent="Вернуться к сегодняшнему";b.onclick=()=>{picked=null;render()};badge.appendChild(b)}
+  renderBars(idx,i);
+}
+
+let built=false;
+function renderBars(idx,sel){
+  const box=$("bars");
+  if(!built){for(let k=0;k<TOTAL;k++){const b=document.createElement("button");b.type="button";b.className="bar";
+    b.addEventListener("click",()=>{const t=dayIndex();if(t===null||k>t)return;picked=k;render();$("card").scrollIntoView({behavior:"smooth",block:"start"})});box.appendChild(b)}built=true}
+  for(let k=0;k<TOTAL;k++){const b=box.children[k];const past=k<idx,cur=k===idx;
+    b.className="bar"+(past?" past":"")+(cur?" today":"")+(sel===k&&!cur?" sel":"");b.disabled=!(past||cur);
+    const lab="Такт "+(k+1)+", "+fmt(dateOf(k),{day:"numeric",month:"long"});b.setAttribute("aria-label",lab);b.title=lab}
+}
+
+let lastDay=today0().getTime();
+function tick(){const t=today0().getTime();if(t!==lastDay){lastDay=t;picked=null;render()}}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)tick()});
+setInterval(tick,60000);
+render();
+
+// подсказка про установку на телефон
+const standalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+if(!standalone){
+  const ua=navigator.userAgent;const el=$("install");
+  if(/iPhone|iPad|iPod/.test(ua)){el.textContent="Чтобы партитура была под рукой, нажмите «Поделиться» внизу Safari и выберите «На экран „Домой“».";el.hidden=false}
+  else if(/Android/.test(ua)){el.textContent="Чтобы партитура была под рукой, откройте меню браузера и выберите «Добавить на главный экран».";el.hidden=false}
+}
+if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
+})();
+</script>
+</body>
+</html>
